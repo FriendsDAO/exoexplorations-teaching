@@ -11,6 +11,8 @@ import numpy as np
 from matplotlib import animation, rc
 from IPython.display import HTML
 from plotly.offline import init_notebook_mode, iplot
+from IPython.display import YouTubeVideo
+
 
 def create_circular_mask(h, w, center=None, radius=None):
 
@@ -43,8 +45,11 @@ def lightcurve(planet_radius, star_radius, i, imsize=(400, 400)):
 
     return np.arange(imsize[0]), area_star
 
+def show_transit_video():
+    return YouTubeVideo('8v4SRfmoTuU', width=800, height=300)
+
+
 def simulate(planet_radius, star_radius, inclination, imsize=(400, 400)):
-    
     time, flux = lightcurve(planet_radius, star_radius, i=inclination, imsize=imsize)
     dfs = pd.DataFrame({'time': time, 'flux': flux, 'star_radius': star_radius, 'planet_radius': planet_radius})
     
