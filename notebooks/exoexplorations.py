@@ -138,6 +138,7 @@ def simulate(planet_radius, star_radius, inclination, imsize=(400, 400)):
             )
         ]
     )
+    return fig
 
 def execute_for_a_hint():
     return "pd.read_csv('sets.csv')"
