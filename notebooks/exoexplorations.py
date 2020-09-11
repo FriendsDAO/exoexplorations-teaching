@@ -53,12 +53,16 @@ def simulate(planet_radius, star_radius, inclination, imsize=(400, 400)):
     
     if planet_radius > star_radius:
         print("Can the planet's radius really be greater than the stars radius?")
+        return
     if star_radius > 200:
         print("Please choose the star's radius to be less than 200")
+        return
     if planet_radius > 200:
         print("Please choose the planet's radius to be less than 200")
+        return
     if inclination > 200:
         print("Please choose an inclination less than 200 or -200")
+        return
     else:
         time, flux = lightcurve(planet_radius, star_radius, i=inclination, imsize=imsize)
         dfs = pd.DataFrame({'time': time, 'flux': flux, 'star_radius': star_radius, 'planet_radius': planet_radius})
