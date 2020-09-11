@@ -50,95 +50,105 @@ def show_transit_video():
 
 
 def simulate(planet_radius, star_radius, inclination, imsize=(400, 400)):
-    time, flux = lightcurve(planet_radius, star_radius, i=inclination, imsize=imsize)
-    dfs = pd.DataFrame({'time': time, 'flux': flux, 'star_radius': star_radius, 'planet_radius': planet_radius})
     
-    first_dip = np.where(np.diff(flux) < 0)[0][0]
-    first_full = np.where(np.diff(flux) < 0)[0][-1]
-    sec_dip = np.where(np.diff(flux) > 0)[0][0]
-    sec_full = np.where(np.diff(flux) > 0)[0][-1]
+    if planet_radius > star_radius:
+        print("Can the planet's radius really be greater than the stars radius?")
+    if star_radius > 200:
+        print("Please choose the star's radius to be less than 200")
+    if planet_radius > 200:
+        print("Please choose the planet's radius to be less than 200")
+    if inclination > 200:
+        print("Please choose an inclination less than 200 or -200")
+    else:
+        time, flux = lightcurve(planet_radius, star_radius, i=inclination, imsize=imsize)
+        dfs = pd.DataFrame({'time': time, 'flux': flux, 'star_radius': star_radius, 'planet_radius': planet_radius})
 
-    init_notebook_mode(connected = True)
-    fig = go.Figure(
-        data=[go.Scatter(x=dfs.time.values, y=dfs.flux.values,
-                         mode="lines",
-                         name="Imaginary Planet",
-                         line=dict(width=2, color="blue")),
-              go.Scatter(x=dfs.time.values, y=dfs.flux.values,
-                         mode="lines",
-                         name="Light from a Star",
-                         line=dict(width=2, color="blue"))],
-        layout=go.Layout(
-            xaxis=dict(range=[0, imsize[0]], autorange=False, zeroline=False),
-            yaxis=dict(range=[0, 1.3], autorange=False, zeroline=False),
-            title_text="Exoplanet Transit", hovermode="closest",
-            xaxis_title='Time',
-            yaxis_title='Flux',
-            updatemenus=[dict(type="buttons",
-                              buttons=[dict(label="Play",
-                                            method="animate",
-                                            args=[None])])]),
-        frames=[go.Frame(
-            data=[go.Scatter(
-                x=[dfs.time.values[::5][k]],
-                y=[dfs.flux.values[::5][k]],
-                mode="markers",
-                marker=dict(color="red", size=10))])
+        first_dip = np.where(np.diff(flux) < 0)[0][0]
+        first_full = np.where(np.diff(flux) < 0)[0][-1]
+        sec_dip = np.where(np.diff(flux) > 0)[0][0]
+        sec_full = np.where(np.diff(flux) > 0)[0][-1]
 
-            for k in range(dfs.time.values[::5].shape[0])]
-    )
+        init_notebook_mode(connected = True)
+        fig = go.Figure(
+            data=[go.Scatter(x=dfs.time.values, y=dfs.flux.values,
+                             mode="lines",
+                             name="Imaginary Planet",
+                             line=dict(width=2, color="blue")),
+                  go.Scatter(x=dfs.time.values, y=dfs.flux.values,
+                             mode="lines",
+                             name="Light from a Star",
+                             line=dict(width=2, color="blue"))],
+            layout=go.Layout(
+                xaxis=dict(range=[0, imsize[0]], autorange=False, zeroline=False),
+                yaxis=dict(range=[0, 1.3], autorange=False, zeroline=False),
+                title_text="Exoplanet Transit", hovermode="closest",
+                xaxis_title='Time',
+                yaxis_title='f, Flux',
+                updatemenus=[dict(type="buttons",
+                                  buttons=[dict(label="Play",
+                                                method="animate",
+                                                args=[None])])]),
+            frames=[go.Frame(
+                data=[go.Scatter(
+                    x=[dfs.time.values[::5][k]],
+                    y=[dfs.flux.values[::5][k]],
+                    mode="markers",
+                    marker=dict(color="red", size=10))])
 
-    fig.update_layout(
-        showlegend=False,
-        annotations=[
-            dict(
-                x=time[first_dip],
-                y=flux[first_dip],
-                xref="x",
-                yref="y",
-                text="Planet starts to occult the star",
-                showarrow=True,
-                arrowhead=7,
-                ax=0,
-                ay=-40
-            ),        
-            dict(
-                x=time[first_full],
-                y=flux[first_full],
-                xref="x",
-                yref="y",
-                text="Planet is fully in front of the star",
-                showarrow=True,
-                arrowhead=7,
-                ax=0,
-                ay=-40
-            ), 
-            dict(
-                x=time[sec_dip],
-                y=flux[sec_dip],
-                xref="x",
-                yref="y",
-                text="Planet has reached the edge of the star",
-                showarrow=True,
-                arrowhead=7,
-                ax=0,
-                ay=40,
+                for k in range(dfs.time.values[::5].shape[0])]
+        )
 
-            ),
-            dict(
-                x=time[sec_full],
-                y=flux[sec_full],
-                xref="x",
-                yref="y",
-                text="Planet has stopped occulting the star",
-                showarrow=True,
-                arrowhead=7,
-                ax=0,
-                ay=-40
-            )
-        ]
-    )
-    return fig
+        fig.update_layout(
+            showlegend=False,
+            annotations=[
+                dict(
+                    x=time[first_dip],
+                    y=flux[first_dip],
+                    xref="x",
+                    yref="y",
+                    text="Planet starts to occult the star",
+                    showarrow=True,
+                    arrowhead=7,
+                    ax=0,
+                    ay=-40
+                ),        
+                dict(
+                    x=time[first_full],
+                    y=flux[first_full],
+                    xref="x",
+                    yref="y",
+                    text="Planet is fully in front of the star",
+                    showarrow=True,
+                    arrowhead=7,
+                    ax=0,
+                    ay=-40
+                ), 
+                dict(
+                    x=time[sec_dip],
+                    y=flux[sec_dip],
+                    xref="x",
+                    yref="y",
+                    text="Planet has reached the edge of the star",
+                    showarrow=True,
+                    arrowhead=7,
+                    ax=0,
+                    ay=40,
+
+                ),
+                dict(
+                    x=time[sec_full],
+                    y=flux[sec_full],
+                    xref="x",
+                    yref="y",
+                    text="Planet has stopped occulting the star",
+                    showarrow=True,
+                    arrowhead=7,
+                    ax=0,
+                    ay=-40
+                )
+            ]
+        )
+        return fig
 
 def execute_for_a_hint():
     return "pd.read_csv('sets.csv')"
